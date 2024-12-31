@@ -6,7 +6,23 @@
   --color-quaternary: #c6a78f;
   --color-quinary: #a0b3a8;
 }
+.fc-event.event-pendiente {
+  background-color: orange !important;
+  border-color: orange !important;
+  color: white !important;
+}
 
+.fc-event.event-confirmada {
+  background-color: green !important;
+  border-color: green !important;
+  color: white !important;
+}
+
+.fc-event.event-cancelada {
+  background-color: red !important;
+  border-color: red !important;
+  color: white !important;
+}
 .card {
   border-radius: 10px;
   overflow: hidden;
