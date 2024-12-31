@@ -30,6 +30,11 @@ export default function Navbar() {
                 Citas
               </a>
             </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/calendario">
+                Calendario
+              </a>
+            </li>
           </ul>
         </div>
       </div>

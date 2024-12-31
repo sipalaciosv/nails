@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, addDoc, getDocs, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase";
 
 // Cargar React-Select dinámicamente para evitar problemas de SSR
@@ -30,9 +30,39 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
     }
 
     try {
+      const nuevaFecha = new Date(fecha);
+      const nuevaHoraInicio = nuevaFecha.getTime();
+      const nuevaHoraFin = nuevaHoraInicio + 60 * 60 * 1000; // +1 hora
+
+      // Validar conflictos de citas
+      const querySnapshot = await getDocs(collection(db, "citas"));
+      const citasExistentes = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        fecha: doc.data().fecha.toDate(),
+      }));
+
+      const conflicto = citasExistentes.some((cita) => {
+        const citaHoraInicio = cita.fecha.getTime();
+        const citaHoraFin = citaHoraInicio + 60 * 60 * 1000; // +1 hora
+
+        // Verificar si los rangos de tiempo se solapan
+        return (
+          (nuevaHoraInicio >= citaHoraInicio && nuevaHoraInicio < citaHoraFin) ||
+          (nuevaHoraFin > citaHoraInicio && nuevaHoraFin <= citaHoraFin) ||
+          (nuevaHoraInicio <= citaHoraInicio && nuevaHoraFin >= citaHoraFin)
+        );
+      });
+
+      if (conflicto) {
+        alert("Ya existe una cita en el rango de tiempo seleccionado.");
+        return;
+      }
+
+      // Registrar la cita si no hay conflictos
       const nuevaCita = {
         idCliente: selectedCliente.value,
-        fecha: Timestamp.fromDate(new Date(fecha)),
+        fecha: Timestamp.fromDate(nuevaFecha),
         servicio,
         precio: parseFloat(precio),
         estado,
