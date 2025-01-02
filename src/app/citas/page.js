@@ -54,22 +54,32 @@ export default function Citas() {
     }}>
       <Navbar cambiarFondo={cambiarFondo}/>
       <div className="container py-5">
-        <h1 className="text-center mb-4">Gestión de Citas</h1>
+        <h1 className="h1-titulo">Gestión de Citas</h1>
         <div className="row">
-          <div className="col-md-6">
-            <RegistrarCita
-              clientes={clientes}
-              onCitaAgregada={handleCitaAgregada}
-            />
-          </div>
-          <div className="col-md-6">
-            <ListarCitas
-              citas={citas}
-              clientes={clientes}
-              onCitaActualizada={handleCitaActualizada}
-            />
-          </div>
-        </div>
+  <div className="col-md-6 mb-3 mb-md-0">
+    <div className="card card-pastel">
+      <h3 className="card-title titulo">
+        <i className="bi bi-calendar-plus me-2"></i>Registrar Cita
+      </h3>
+      <RegistrarCita
+        clientes={clientes}
+        onCitaAgregada={handleCitaAgregada}
+      />
+    </div>
+  </div>
+  <div className="col-md-6">
+    <div className="card card-pastel">
+      <h3 className="card-title titulo">
+        <i className="bi bi-calendar-check me-2"></i>Listado de Citas
+      </h3>
+      <ListarCitas
+        citas={citas}
+        clientes={clientes}
+        onCitaActualizada={handleCitaActualizada}
+      />
+    </div>
+  </div>
+</div>
       </div>
     </div>
   );

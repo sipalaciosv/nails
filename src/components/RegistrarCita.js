@@ -201,7 +201,7 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
         ></textarea>
       </div>
 
-      <button type="submit" className="btn btn-primary">
+      <button type="submit" className="btn-crear mt-3">
         Registrar Cita
       </button>
     </form>

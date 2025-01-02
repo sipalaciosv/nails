@@ -95,23 +95,7 @@
 .btn-pagination:hover {
   background-color: var(--color-pagination-hover, #C3C6D4); /* Azul más oscuro */
 }
-.fc-event.fc-event-pendiente {
-  background-color: orange !important;
-  border-color: orange !important;
-  color: white !important;
-}
 
-.fc-event.fc-event-confirmada {
-  background-color: green !important;
-  border-color: green !important;
-  color: white !important;
-}
-
-.fc-event.fc-event-cancelada {
-  background-color: red !important;
-  border-color: red !important;
-  color: white !important;
-}
 
 
 .card {

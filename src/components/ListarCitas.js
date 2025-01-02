@@ -3,14 +3,22 @@
 import { useState } from "react";
 import EditarCita from "./EditarCita";
 import EliminarCita from "./EliminarCita";
-
+import { format } from "date-fns";
+import { es } from "date-fns/locale"; // Para formato en español
+import { Modal } from "react-bootstrap"; // Importa el modal
 export default function ListarCitas({ citas, clientes, onCitaActualizada }) {
   const [mensaje, setMensaje] = useState("");
   const [editCita, setEditCita] = useState(null);
   const [busqueda, setBusqueda] = useState(""); // Estado para el buscador
   const [currentPage, setCurrentPage] = useState(1); // Página actual
-  const itemsPerPage = 6; // Número de citas por página
+  const itemsPerPage = 3; // Número de citas por página
+  const [showModal, setShowModal] = useState(false);
+const [citaEditando, setCitaEditando] = useState(null);
 
+  const formatFecha = (fecha) => {
+    const dateObj = fecha.toDate();
+    return format(dateObj, "dd-MM-yyyy, hh:mm a", { locale: es });
+  };
   // Función para obtener el nombre del cliente
   const getClienteNombre = (idCliente) => {
     const cliente = clientes.find((c) => c.id === idCliente);
@@ -51,15 +59,15 @@ export default function ListarCitas({ citas, clientes, onCitaActualizada }) {
   };
 
   const handleEditar = (cita) => {
-    setEditCita(cita);
+    setCitaEditando(cita);
+    setShowModal(true); // Abre el modal
   };
 
   const handleActualizar = (nuevaCita) => {
     onCitaActualizada((prevCitas) =>
       prevCitas.map((cita) => (cita.id === nuevaCita.id ? nuevaCita : cita))
     );
-    setEditCita(null);
-    setMensaje("Cita actualizada correctamente.");
+    setShowModal(false); // Cierra el modal
   };
 
   const handleEliminar = (idCita) => {
@@ -69,7 +77,7 @@ export default function ListarCitas({ citas, clientes, onCitaActualizada }) {
 
   return (
     <div>
-      <h3>Listado de Citas</h3>
+      
       {mensaje && (
         <div className="alert alert-success alert-dismissible fade show" role="alert">
           {mensaje}
@@ -113,8 +121,18 @@ export default function ListarCitas({ citas, clientes, onCitaActualizada }) {
               {citasPaginadas.map((cita) => (
                 <tr key={cita.id}>
                   <td>{getClienteNombre(cita.idCliente)}</td>
-                  <td>{cita.fecha.toDate().toLocaleString()}</td>
-                  <td>{calcularHoraFin(cita.fecha, cita.duracionMilisegundos)}</td>
+                  <td>
+  <div style={{ whiteSpace: "nowrap" }}>
+    <div>{format(cita.fecha.toDate(), "dd-MM-yyyy", { locale: es })}</div>
+    <div>{format(cita.fecha.toDate(), "hh:mm a", { locale: es })}</div>
+  </div>
+</td>
+<td>
+  <div style={{ whiteSpace: "nowrap" }}>
+    <div>{format(new Date(cita.fecha.toDate().getTime() + cita.duracionMilisegundos), "dd-MM-yyyy", { locale: es })}</div>
+    <div>{format(new Date(cita.fecha.toDate().getTime() + cita.duracionMilisegundos), "hh:mm a", { locale: es })}</div>
+  </div>
+</td>
                   <td>{cita.servicio}</td>
                   <td>${cita.precio}</td>
                   <td>{editCita?.id === cita.id ? "Editando..." : cita.estado}</td>
@@ -128,7 +146,7 @@ export default function ListarCitas({ citas, clientes, onCitaActualizada }) {
                     ) : (
                       <div className="d-flex gap-2">
                         <button
-                          className="btn btn-primary btn-sm"
+                          className="btn btn-edit btn-sm"
                           onClick={() => handleEditar(cita)}
                         >
                           Editar
@@ -143,11 +161,25 @@ export default function ListarCitas({ citas, clientes, onCitaActualizada }) {
           </table>
         </div>
       )}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+  <Modal.Header closeButton>
+    <Modal.Title>Editar Cita</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    {citaEditando && (
+      <EditarCita
+        cita={citaEditando}
+        onActualizar={handleActualizar}
+        onCancelar={() => setShowModal(false)}
+      />
+    )}
+  </Modal.Body>
+</Modal>
       {/* Controles de Paginación */}
       {citasFiltradas.length > itemsPerPage && (
         <div className="d-flex justify-content-between mt-3">
           <button
-            className="btn btn-secondary"
+            className="btn-pagination"
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
           >
@@ -157,7 +189,7 @@ export default function ListarCitas({ citas, clientes, onCitaActualizada }) {
             Página {currentPage} de {totalPages}
           </span>
           <button
-            className="btn btn-secondary"
+            className="btn-pagination"
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
           >
