@@ -1,8 +1,8 @@
 "use client";
 
-export default function Navbar() {
+export default function Navbar({ cambiarFondo }) {
   return (
-    <nav className="navbar navbar-expand-lg navbar-custom ">
+    <nav className="navbar navbar-expand-lg navbar-custom">
       <div className="container">
         <a className="navbar-brand" href="/">
           NailsApp
@@ -19,8 +19,8 @@ export default function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav">
-          <li className="nav-item">
+          <ul className="navbar-nav me-auto">
+            <li className="nav-item">
               <a className="nav-link" href="/clientes">
                 Clientes
               </a>
@@ -37,6 +37,13 @@ export default function Navbar() {
             </li>
           </ul>
         </div>
+        <button
+          className="btn btn-fondo btn-sm ms-3"
+          onClick={cambiarFondo}
+          title="Cambiar Fondo"
+        >
+          Cambiar Fondo
+        </button>
       </div>
     </nav>
   );

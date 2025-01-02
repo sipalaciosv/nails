@@ -14,6 +14,7 @@
     "@fullcalendar/interaction": "^5.11.5",
     "@fullcalendar/react": "^5.11.5",
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "date-fns": "^4.1.0",
     "firebase": "^11.1.0",
     "next": "15.1.3",

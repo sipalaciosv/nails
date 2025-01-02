@@ -81,7 +81,7 @@ export default function ListarClientes({ clientes, onEdit }) {
                   </p>
                   <div className="d-flex justify-content-between">
                     <button
-                      className="btn btn-primary btn-sm"
+                      className="btn btn-edit btn-sm"
                       onClick={() => onEdit(cliente)}
                     >
                       Editar

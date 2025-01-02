@@ -5,17 +5,96 @@
   --color-tertiary: #D3C2CE;
   --color-quaternary: #D3D2C7;
   --color-quinary: #E2E1B9;
+  --color-card-pastel: #f8f9fa; /* Color claro pastel */
+  --color-card-pastel-border: #e2e2e2; /* Borde suave */
   --color-accept: #B0D9B1;
   --color-accept-hover: #79AC78;
-  --color-edit: #B7E5B6; /* Verde pastel */
---color-edit-hover: #A1D6A0; /* Más oscuro al pasar el mouse */
+  --color-edit: #B0D9B1; /* Verde pastel */
+  --color-navbar: #f7bfd8;
+--color-edit-hover: #79AC78; /* Más oscuro al pasar el mouse */
 --color-edit-text: #ffffff; /* Texto blanco */
---color-pagination: #D5D8E4; /* Azul pastel */
---color-pagination-hover: #C3C6D4; /* Más oscuro al pasar el mouse */
---color-pagination-text: #333333; /* Texto oscuro */
-
+--color-pagination: #B0D9E1; /* Azul pastel */
+--color-pagination-hover: #79ACB8; /* Más oscuro al pasar el mouse */
+--color-pagination-text: #ffffff; /* Texto oscuro */
+--color-create: #D9B1B0;
+--color-create-hover: #AC7878;
+--color-create-text: #ffffff;
+.card-pastel {
+  background-color: var(--color-card-pastel); /* Fondo pastel */
+  border: 1px solid var(--color-card-pastel-border); /* Borde claro */
+  border-radius: 15px; /* Bordes redondeados */
+  padding: 20px; /* Espaciado interno */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.card-pastel:hover {
+  transform: scale(1.02); /* Efecto al pasar el mouse */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Mayor profundidad */
+}
+}
+.btn-crear {
+  background-color: var(--color-create); 
+  color: var(--color-create-text); 
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+.btn-crear:hover {
+  background-color: var(--color-create-hover);
+  color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}  
+/* Botón secundario (Cancelar, Volver, etc.) */
+.btn-secondary-custom {
+  background-color: white;
+  color: #FFB4E5;
+  border: 2px solid #FFB4E5;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary-custom:hover {
+  background-color: #FFB4E5;
+  color: white;
+}
+.btn-edit {
+  background-color: var(--color-edit); /* Verde pastel */
+  color: white; /* Blanco */
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+.btn-edit:hover {
+  background-color: var(--color-edit-hover); /* Verde más oscuro */
+  color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.btn-pagination {
+  background-color: var(--color-pagination, #D5D8E4); /* Azul pastel */
+  color: var(--color-pagination-text, #333333); /* Texto oscuro */
+  border: 1px solid var(--color-quaternary, #D3D2C7); /* Gris claro */
+  transition: background-color 0.3s;
+}
+
+.btn-pagination:hover {
+  background-color: var(--color-pagination-hover, #C3C6D4); /* Azul más oscuro */
+}
 .fc-event.fc-event-pendiente {
   background-color: orange !important;
   border-color: orange !important;
@@ -40,11 +119,60 @@
   overflow: hidden;
 }
 
-.card-title {
+.titulo {
+  font-family: 'Poppins', sans-serif; /* Fuente moderna */
+  font-size: 1.8rem; /* Tamaño adecuado para un título */
+  font-weight: 600; /* Seminegrita */
+  color: var(--color-primary); /* Color principal pastel */
+  text-align: center; /* Centrado */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  margin-bottom: 10px; /* Espaciado inferior */
+  border-bottom: 2px solid var(--color-secondary, #E2AFDE); /* Línea decorativa */
+  padding-bottom: 5px; /* Espaciado con la línea */
+  position: relative;
+  
+}
+.h1-titulo {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-align: center;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+  padding: 10px;
+  background:#f8f9fa;
+  border-radius: 10px;
+}
+.btn-fondo {
+  background-color: var(--color-navbar);
+  color: white;
   font-weight: bold;
-  text-transform: capitalize;
+  border-color: var(--color-primary);
+  border-radius: 8px;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.btn-fondo:hover {
+  background-color: var(--color-navbar);
+  transform: scale(1.1);
+  color: white;
+  
+}
+.titulo::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-quaternary)
+  );
+}
 .text-ellipsis {
   display: block;
   max-height: 3em; /* Limita el espacio vertical */
@@ -83,12 +211,50 @@
 }
 
 .navbar-custom {
-    background-color: var(--color-tertiary) !important;
-    height: 70px; /* Altura fija */
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-  }
+  background-color: var(--color-navbar) !important;
+  height: auto; /* Ajusta la altura automáticamente según el contenido */
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.navbar-toggler {
+  border: none; /* Elimina el borde alrededor del icono de hamburguesa */
+}
+
+.navbar-toggler-icon {
+  background-color: var(--color-navbar); /* Cambia el color del icono */
+  border-radius: 4px; /* Bordes suaves */
+}
+.nav-item {
+  margin: 5px; /* Espaciado entre los elementos */
+  border-radius: 8px; /* Bordes redondeados */
+  overflow: hidden; /* Para que el contenido no salga del borde */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Suaviza los cambios */
+}
+
+.nav-item .nav-link {
+  padding: 8px 15px; /* Espaciado interno */
+  color: white; /* Usa el color primario definido */
+  font-weight: 600; /* Negrita */
+  text-decoration: none; /* Quita el subrayado */
+  display: block; /* Asegura que el link ocupe toda el área del `li` */
+  text-align: center; /* Centra el texto */
+  background-color: var(--color-navbar); /* Fondo por defecto */
+  font-size: 18;
+}
+
+.nav-item .nav-link:hover {
+  background-color: var(--color-secondary); /* Fondo al pasar el mouse */
+  color: white; /* Texto blanco al pasar el mouse */
+  transform: scale(1.05); /* Aumenta ligeramente el tamaño */
+}
+
+.nav-item.active .nav-link {
+  background-color: var(--color-primary); /* Fondo para el elemento activo */
+  color: white; /* Texto blanco para el activo */
+}
+
 /* Botones Personalizados */
 
 /* Botón principal (Agregar, Guardar, etc.) */
@@ -110,45 +276,17 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  /* Botón secundario (Cancelar, Volver, etc.) */
-  .btn-secondary-custom {
-    background-color: white;
-    color: #FFB4E5;
-    border: 2px solid #FFB4E5;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
+  .modal-content {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   }
-  
-  .btn-secondary-custom:hover {
-    background-color: #FFB4E5;
-    color: white;
-  }
-  .btn-edit {
-    background-color: var(--color-edit, #B7E5B6); /* Verde pastel */
-    color: var(--color-edit-text, #ffffff); /* Blanco */
+  .modal-header, .modal-footer {
     border: none;
-    transition: background-color 0.3s;
+    background-color: var(--color-secondary);
+    color: white;
+    font-weight: bold;
   }
-  
-  .btn-edit:hover {
-    background-color: var(--color-edit-hover, #A1D6A0); /* Verde más oscuro */
-  }
-  
-  .btn-pagination {
-    background-color: var(--color-pagination, #D5D8E4); /* Azul pastel */
-    color: var(--color-pagination-text, #333333); /* Texto oscuro */
-    border: 1px solid var(--color-quaternary, #D3D2C7); /* Gris claro */
-    transition: background-color 0.3s;
-  }
-  
-  .btn-pagination:hover {
-    background-color: var(--color-pagination-hover, #C3C6D4); /* Azul más oscuro */
-  }
-  
   .full-screen {
     height: 100vh; /* Ocupa toda la altura del viewport */
     flex-direction: column; /* Asegura que los hijos estén en columna */
@@ -157,4 +295,6 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    
   }
+  

@@ -6,8 +6,9 @@ import RegistrarCita from "@/components/RegistrarCita";
 import ListarCitas from "@/components/ListarCitas";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase";
-
+import { useBackground } from "@/context/BackgroundContext";
 export default function Citas() {
+  const { background, cambiarFondo } = useBackground();
   const [clientes, setClientes] = useState([]);
   const [citas, setCitas] = useState([]);
   const fetchCitas = async () => {
@@ -47,8 +48,11 @@ export default function Citas() {
   };
 
   return (
-    <div>
-      <Navbar />
+    <div  className="full-screen"
+    style={{
+      backgroundImage: `url(${background})`,
+    }}>
+      <Navbar cambiarFondo={cambiarFondo}/>
       <div className="container py-5">
         <h1 className="text-center mb-4">Gestión de Citas</h1>
         <div className="row">
