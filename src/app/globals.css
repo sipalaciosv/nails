@@ -33,6 +33,24 @@
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Mayor profundidad */
 }
 }
+.btn-borrar {
+  background-color: #f65858; /* Rojo pastel */
+  color: white; /* Texto blanco */
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-borrar:hover {
+  background-color: #E57373; /* Rojo más oscuro al pasar el mouse */
+  color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  transform: scale(1.05); /* Efecto de zoom al pasar el mouse */
+}
 .btn-crear {
   background-color: var(--color-create); 
   color: var(--color-create-text); 
@@ -72,19 +90,43 @@
   color: white; /* Blanco */
   border: none;
   border-radius: 8px;
-  font-size: 12px;
-  font-weight: bold;
+  padding: 10px 20px; /* Igual que btn-borrar */
+  font-size: 16px; /* Igual que btn-borrar */
+  font-weight: bold; /* Negrita */
   text-transform: uppercase;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Añadimos transform */
 }
 
 .btn-edit:hover {
   background-color: var(--color-edit-hover); /* Verde más oscuro */
   color: white;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05); /* Efecto de zoom */
 }
 
+.btn-whatsapp {
+  background-color: #25D366; /* Color oficial de WhatsApp */
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.btn-whatsapp:hover {
+  background-color: #1DAF5A; /* Un tono más oscuro al pasar el mouse */
+  transform: scale(1.05);
+  color: white;
+}
 
+.btn-whatsapp i {
+  margin-right: 8px; /* Espaciado entre el icono y el texto */
+  font-size: 20px; /* Ajusta el tamaño del icono */
+}
 .btn-pagination {
   background-color: var(--color-pagination, #D5D8E4); /* Azul pastel */
   color: var(--color-pagination-text, #333333); /* Texto oscuro */
@@ -272,13 +314,13 @@
     font-weight: bold;
   }
   .full-screen {
-    height: 100vh; /* Ocupa toda la altura del viewport */
+    min-height: 100vh; /* Asegura que el fondo cubra al menos la altura del viewport */
+    display: flex;
     flex-direction: column; /* Asegura que los hijos estén en columna */
     justify-content: space-between; /* Distribuye contenido con espacio */
     align-items: center; /* Centra horizontalmente */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    
   }
   

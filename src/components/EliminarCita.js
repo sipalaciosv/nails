@@ -16,7 +16,7 @@ export default function EliminarCita({ idCita, onEliminar }) {
   };
 
   return (
-    <button className="btn btn-danger btn-sm" onClick={handleDelete}>
+    <button className="btn btn-borrar btn-sm" onClick={handleDelete}>
       Borrar
     </button>
   );

@@ -17,7 +17,11 @@ export default function Page() {
       <Navbar cambiarFondo={cambiarFondo}/>
       <div className="container py-4 d-flex justify-content-center align-items-center">
         <div className="card shadow-lg p-4" style={{ width: "100%", backgroundColor: "rgba(255, 255, 255, 0.95)", borderRadius: "15px" }}>
-          <h2 className="text-center mb-4">Calendario</h2>
+          
+          
+          <h3 className="card-title titulo">
+        <i className="bi bi-calendar3 me-2"></i>Calendario citas
+      </h3>
           <Calendario />
         </div>
       </div>

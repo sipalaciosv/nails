@@ -116,7 +116,7 @@ export default function Calendario() {
 
   return (
     <div>
-      <h3 className="text-center mb-4">Calendario de Citas</h3>
+      
       <Calendar
         localizer={localizer}
         events={citas}
@@ -142,16 +142,16 @@ export default function Calendario() {
           // Asignar colores según el estado
           switch (event.estado) {
             case "Pendiente":
-              backgroundColor = "orange";
+              backgroundColor = "#6aa3b4";
               break;
             case "Confirmada":
-              backgroundColor = "green";
+              backgroundColor = "#77dd77";
               break;
             case "Cancelada":
-              backgroundColor = "red";
+              backgroundColor = "#ff6961";
               break;
             default:
-              backgroundColor = "gray"; // Color por defecto
+              backgroundColor = "#ebe6ea"; // Color por defecto
           }
 
           return {
@@ -212,18 +212,18 @@ export default function Calendario() {
           </Modal.Body>
         )}
         <Modal.Footer>
-          {isEditing ? null : (
-            <Button variant="primary" onClick={() => setIsEditing(true)}>
-              Editar
-            </Button>
-          )}
-          <Button variant="secondary" onClick={closeModal}>
-            {isEditing ? "Cancelar" : "Cerrar"}
-          </Button>
-          <Button variant="info" onClick={handleEnviarWhatsApp}>
-            Enviar WhatsApp
-          </Button>
-        </Modal.Footer>
+  {!isEditing ? (
+    <Button className="btn-edit"  onClick={() => setIsEditing(true)}>
+      Editar
+    </Button>
+  ) : null}
+  <Button className="btn-borrar" onClick={closeModal}>
+    {isEditing ? "Cancelar" : "Cerrar"}
+  </Button>
+  <Button className="btn-whatsapp" onClick={handleEnviarWhatsApp}>
+    <i className="bi bi-whatsapp"></i> Enviar WhatsApp
+  </Button>
+</Modal.Footer>
       </Modal>
     </div>
   );

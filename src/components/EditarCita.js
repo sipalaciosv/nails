@@ -5,13 +5,16 @@ import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase";
 
 export default function EditarCita({ cita, onActualizar, onCancelar }) {
-  const [fechaInicio, setFechaInicio] = useState(
-    cita.fecha.toDate().toISOString().slice(0, 16)
+  const [fecha, setFecha] = useState(
+    cita.fecha.toDate().toISOString().slice(0, 10) // Solo la fecha (YYYY-MM-DD)
   );
-  const [fechaFin, setFechaFin] = useState(
+  const [horaInicio, setHoraInicio] = useState(
+    cita.fecha.toDate().toISOString().slice(11, 16) // Solo la hora de inicio (HH:mm)
+  );
+  const [horaFin, setHoraFin] = useState(
     new Date(cita.fecha.toDate().getTime() + cita.duracionMilisegundos)
       .toISOString()
-      .slice(0, 16)
+      .slice(11, 16) // Solo la hora de fin (HH:mm)
   );
   const [servicio, setServicio] = useState(cita.servicio);
   const [precio, setPrecio] = useState(cita.precio);
@@ -20,11 +23,12 @@ export default function EditarCita({ cita, onActualizar, onCancelar }) {
   const handleSave = async (e) => {
     e.preventDefault();
 
-    const inicio = new Date(fechaInicio);
-    const fin = new Date(fechaFin);
+    // Combinar la fecha seleccionada con las horas de inicio y fin
+    const inicio = new Date(`${fecha}T${horaInicio}`);
+    const fin = new Date(`${fecha}T${horaFin}`);
 
     if (fin <= inicio) {
-      alert("La fecha de fin debe ser posterior a la fecha de inicio.");
+      alert("La hora de fin debe ser posterior a la hora de inicio.");
       return;
     }
 
@@ -57,29 +61,43 @@ export default function EditarCita({ cita, onActualizar, onCancelar }) {
   return (
     <form onSubmit={handleSave}>
       <div className="mb-3">
-        <label htmlFor="fechaInicio" className="form-label">
-          Fecha y Hora de Inicio
+        <label htmlFor="fecha" className="form-label">
+          Fecha
         </label>
         <input
-          type="datetime-local"
+          type="date"
           className="form-control"
-          id="fechaInicio"
-          value={fechaInicio}
-          onChange={(e) => setFechaInicio(e.target.value)}
+          id="fecha"
+          value={fecha}
+          onChange={(e) => setFecha(e.target.value)}
           required
         />
       </div>
 
       <div className="mb-3">
-        <label htmlFor="fechaFin" className="form-label">
-          Fecha y Hora de Fin
+        <label htmlFor="horaInicio" className="form-label">
+          Hora de Inicio
         </label>
         <input
-          type="datetime-local"
+          type="time"
           className="form-control"
-          id="fechaFin"
-          value={fechaFin}
-          onChange={(e) => setFechaFin(e.target.value)}
+          id="horaInicio"
+          value={horaInicio}
+          onChange={(e) => setHoraInicio(e.target.value)}
+          required
+        />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="horaFin" className="form-label">
+          Hora de Fin
+        </label>
+        <input
+          type="time"
+          className="form-control"
+          id="horaFin"
+          value={horaFin}
+          onChange={(e) => setHoraFin(e.target.value)}
           required
         />
       </div>

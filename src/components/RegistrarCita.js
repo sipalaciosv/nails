@@ -10,8 +10,9 @@ const Select = dynamic(() => import("react-select"), { ssr: false });
 
 export default function RegistrarCita({ clientes, onCitaAgregada }) {
   const [selectedCliente, setSelectedCliente] = useState(null);
-  const [fechaInicio, setFechaInicio] = useState("");
-  const [fechaFin, setFechaFin] = useState(""); // Nuevo campo para la hora de fin
+  const [fecha, setFecha] = useState(""); // Selector de fecha
+  const [horaInicio, setHoraInicio] = useState(""); // Hora de inicio
+  const [horaFin, setHoraFin] = useState(""); // Hora de fin
   const [servicio, setServicio] = useState("");
   const [precio, setPrecio] = useState("");
   const [estado, setEstado] = useState("Pendiente");
@@ -30,25 +31,22 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
       return;
     }
 
-    if (!fechaInicio || !fechaFin) {
-      alert("Debes ingresar tanto la fecha de inicio como la fecha de fin.");
+    if (!fecha || !horaInicio || !horaFin) {
+      alert("Debes ingresar la fecha y el rango de horas.");
       return;
     }
 
-    // Convertir las fechas ingresadas a objetos Date
-    const inicio = new Date(fechaInicio);
-    const fin = new Date(fechaFin);
+    const inicio = new Date(`${fecha}T${horaInicio}`);
+    const fin = new Date(`${fecha}T${horaFin}`);
 
     if (fin <= inicio) {
-      alert("La fecha de fin debe ser posterior a la fecha de inicio.");
+      alert("La hora de fin debe ser posterior a la hora de inicio.");
       return;
     }
 
-    // Calcular duración en milisegundos
     const duracionMilisegundos = fin.getTime() - inicio.getTime();
 
     try {
-      // Validar conflictos de citas
       const querySnapshot = await getDocs(collection(db, "citas"));
       const citasExistentes = querySnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -60,7 +58,6 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
         const citaHoraInicio = cita.fecha.getTime();
         const citaHoraFin = citaHoraInicio + cita.duracionMilisegundos;
 
-        // Verificar si los rangos de tiempo se solapan
         return (
           (inicio.getTime() >= citaHoraInicio && inicio.getTime() < citaHoraFin) ||
           (fin.getTime() > citaHoraInicio && fin.getTime() <= citaHoraFin) ||
@@ -73,7 +70,6 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
         return;
       }
 
-      // Registrar la cita si no hay conflictos
       const nuevaCita = {
         idCliente: selectedCliente.value,
         fecha: Timestamp.fromDate(inicio),
@@ -90,8 +86,9 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
 
       // Limpiar el formulario
       setSelectedCliente(null);
-      setFechaInicio("");
-      setFechaFin(""); // Limpiar fecha fin
+      setFecha("");
+      setHoraInicio("");
+      setHoraFin("");
       setServicio("");
       setPrecio("");
       setEstado("Pendiente");
@@ -117,29 +114,43 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
       </div>
 
       <div className="mb-3">
-        <label htmlFor="fechaInicio" className="form-label">
-          Fecha y Hora de Inicio
+        <label htmlFor="fecha" className="form-label">
+          Fecha
         </label>
         <input
-          type="datetime-local"
+          type="date"
           className="form-control"
-          id="fechaInicio"
-          value={fechaInicio}
-          onChange={(e) => setFechaInicio(e.target.value)}
+          id="fecha"
+          value={fecha}
+          onChange={(e) => setFecha(e.target.value)}
           required
         />
       </div>
 
       <div className="mb-3">
-        <label htmlFor="fechaFin" className="form-label">
-          Fecha y Hora de Fin
+        <label htmlFor="horaInicio" className="form-label">
+          Hora de Inicio
         </label>
         <input
-          type="datetime-local"
+          type="time"
           className="form-control"
-          id="fechaFin"
-          value={fechaFin}
-          onChange={(e) => setFechaFin(e.target.value)}
+          id="horaInicio"
+          value={horaInicio}
+          onChange={(e) => setHoraInicio(e.target.value)}
+          required
+        />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="horaFin" className="form-label">
+          Hora de Fin
+        </label>
+        <input
+          type="time"
+          className="form-control"
+          id="horaFin"
+          value={horaFin}
+          onChange={(e) => setHoraFin(e.target.value)}
           required
         />
       </div>
