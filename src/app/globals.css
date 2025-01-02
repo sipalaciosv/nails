@@ -332,3 +332,33 @@
     background-color: #dc3545; /* Rojo */
     color: white;
   }
+  .navbar-profile-btn {
+    background-color: var(--color-navbar); /* Fondo del navbar */
+    color: white; /* Texto blanco */
+    border: none; /* Sin bordes */
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 8px 16px; /* Espaciado interno */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones */
+  }
+  
+  .navbar-profile-btn:hover {
+    background-color: var(--color-secondary); /* Fondo al pasar el mouse */
+    transform: scale(1.05); /* Efecto de zoom */
+    color: white;
+  }
+  
+  .navbar-profile-menu {
+    background-color: var(--color-navbar); /* Fondo del dropdown */
+    border: 1px solid var(--color-secondary); /* Borde del dropdown */
+    border-radius: 8px; /* Bordes redondeados */
+  }
+  
+  .navbar-profile-menu .dropdown-item {
+    color: white; /* Texto blanco */
+  }
+  
+  .navbar-profile-menu .dropdown-item:hover {
+    background-color: var(--color-secondary); /* Fondo al pasar el mouse */
+    color: white;
+  }
+  
