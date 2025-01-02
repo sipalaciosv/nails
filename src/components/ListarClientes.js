@@ -100,7 +100,7 @@ export default function ListarClientes({ clientes, onEdit }) {
       {clientesFiltrados.length > itemsPerPage && (
         <div className="d-flex justify-content-between mt-3">
           <button
-            className="btn btn-secondary"
+            className="btn-pagination"
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
           >
@@ -110,7 +110,7 @@ export default function ListarClientes({ clientes, onEdit }) {
             Página {currentPage} de {totalPages}
           </span>
           <button
-            className="btn btn-secondary"
+            className="btn-pagination"
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
           >

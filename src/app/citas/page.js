@@ -10,26 +10,24 @@ import { db } from "@/firebase";
 export default function Citas() {
   const [clientes, setClientes] = useState([]);
   const [citas, setCitas] = useState([]);
+  const fetchCitas = async () => {
+    const querySnapshot = await getDocs(collection(db, "citas"));
+    const citasData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setCitas(citasData);
+  };
 
+  const fetchClientes = async () => {
+    const querySnapshot = await getDocs(collection(db, "clientes"));
+    const clientesData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setClientes(clientesData);
+  };
   useEffect(() => {
-    const fetchClientes = async () => {
-      const querySnapshot = await getDocs(collection(db, "clientes"));
-      const clientesData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setClientes(clientesData);
-    };
-
-    const fetchCitas = async () => {
-      const querySnapshot = await getDocs(collection(db, "citas"));
-      const citasData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setCitas(citasData);
-    };
-
     fetchClientes();
     fetchCitas();
   }, []);
@@ -38,10 +36,14 @@ export default function Citas() {
     setCitas((prev) => [...prev, nuevaCita]);
   };
 
-  const handleCitaActualizada = (citaActualizada) => {
+  const handleCitaActualizada = async (citaActualizada) => {
+    // Actualizar localmente primero
     setCitas((prev) =>
       prev.map((cita) => (cita.id === citaActualizada.id ? citaActualizada : cita))
     );
+
+    // Sincronizar con Firebase en segundo plano
+    await fetchCitas(); // Llama a fetchCitas directamente
   };
 
   return (

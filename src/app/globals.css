@@ -1,28 +1,40 @@
 
 :root {
-  --color-primary: #e48826;
-  --color-secondary: #bb99b7;
-  --color-tertiary: #ecc8c9;
-  --color-quaternary: #c6a78f;
-  --color-quinary: #a0b3a8;
+  --color-primary: #F991CC;
+  --color-secondary: #E2AFDE;
+  --color-tertiary: #D3C2CE;
+  --color-quaternary: #D3D2C7;
+  --color-quinary: #E2E1B9;
+  --color-accept: #B0D9B1;
+  --color-accept-hover: #79AC78;
+  --color-edit: #B7E5B6; /* Verde pastel */
+--color-edit-hover: #A1D6A0; /* Más oscuro al pasar el mouse */
+--color-edit-text: #ffffff; /* Texto blanco */
+--color-pagination: #D5D8E4; /* Azul pastel */
+--color-pagination-hover: #C3C6D4; /* Más oscuro al pasar el mouse */
+--color-pagination-text: #333333; /* Texto oscuro */
+
 }
-.fc-event.event-pendiente {
+
+.fc-event.fc-event-pendiente {
   background-color: orange !important;
   border-color: orange !important;
   color: white !important;
 }
 
-.fc-event.event-confirmada {
+.fc-event.fc-event-confirmada {
   background-color: green !important;
   border-color: green !important;
   color: white !important;
 }
 
-.fc-event.event-cancelada {
+.fc-event.fc-event-cancelada {
   background-color: red !important;
   border-color: red !important;
   color: white !important;
 }
+
+
 .card {
   border-radius: 10px;
   overflow: hidden;
@@ -81,7 +93,7 @@
 
 /* Botón principal (Agregar, Guardar, etc.) */
 .btn-primary-custom {
-    background-color:var(--color-tertiary);
+    background-color:var(--color-accept);
     color: white;
     border: none;
     border-radius: 8px;
@@ -93,7 +105,7 @@
   }
   
   .btn-primary-custom:hover {
-    background-color: #ff99d6;
+    background-color: var(--color-accept-hover);
     color: white;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   }
@@ -115,6 +127,28 @@
     background-color: #FFB4E5;
     color: white;
   }
+  .btn-edit {
+    background-color: var(--color-edit, #B7E5B6); /* Verde pastel */
+    color: var(--color-edit-text, #ffffff); /* Blanco */
+    border: none;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-edit:hover {
+    background-color: var(--color-edit-hover, #A1D6A0); /* Verde más oscuro */
+  }
+  
+  .btn-pagination {
+    background-color: var(--color-pagination, #D5D8E4); /* Azul pastel */
+    color: var(--color-pagination-text, #333333); /* Texto oscuro */
+    border: 1px solid var(--color-quaternary, #D3D2C7); /* Gris claro */
+    transition: background-color 0.3s;
+  }
+  
+  .btn-pagination:hover {
+    background-color: var(--color-pagination-hover, #C3C6D4); /* Azul más oscuro */
+  }
+  
   .full-screen {
     height: 100vh; /* Ocupa toda la altura del viewport */
     flex-direction: column; /* Asegura que los hijos estén en columna */

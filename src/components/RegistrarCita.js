@@ -10,7 +10,8 @@ const Select = dynamic(() => import("react-select"), { ssr: false });
 
 export default function RegistrarCita({ clientes, onCitaAgregada }) {
   const [selectedCliente, setSelectedCliente] = useState(null);
-  const [fecha, setFecha] = useState("");
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState(""); // Nuevo campo para la hora de fin
   const [servicio, setServicio] = useState("");
   const [precio, setPrecio] = useState("");
   const [estado, setEstado] = useState("Pendiente");
@@ -29,11 +30,24 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
       return;
     }
 
-    try {
-      const nuevaFecha = new Date(fecha);
-      const nuevaHoraInicio = nuevaFecha.getTime();
-      const nuevaHoraFin = nuevaHoraInicio + 60 * 60 * 1000; // +1 hora
+    if (!fechaInicio || !fechaFin) {
+      alert("Debes ingresar tanto la fecha de inicio como la fecha de fin.");
+      return;
+    }
 
+    // Convertir las fechas ingresadas a objetos Date
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
+
+    if (fin <= inicio) {
+      alert("La fecha de fin debe ser posterior a la fecha de inicio.");
+      return;
+    }
+
+    // Calcular duración en milisegundos
+    const duracionMilisegundos = fin.getTime() - inicio.getTime();
+
+    try {
       // Validar conflictos de citas
       const querySnapshot = await getDocs(collection(db, "citas"));
       const citasExistentes = querySnapshot.docs.map((doc) => ({
@@ -44,13 +58,13 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
 
       const conflicto = citasExistentes.some((cita) => {
         const citaHoraInicio = cita.fecha.getTime();
-        const citaHoraFin = citaHoraInicio + 60 * 60 * 1000; // +1 hora
+        const citaHoraFin = citaHoraInicio + cita.duracionMilisegundos;
 
         // Verificar si los rangos de tiempo se solapan
         return (
-          (nuevaHoraInicio >= citaHoraInicio && nuevaHoraInicio < citaHoraFin) ||
-          (nuevaHoraFin > citaHoraInicio && nuevaHoraFin <= citaHoraFin) ||
-          (nuevaHoraInicio <= citaHoraInicio && nuevaHoraFin >= citaHoraFin)
+          (inicio.getTime() >= citaHoraInicio && inicio.getTime() < citaHoraFin) ||
+          (fin.getTime() > citaHoraInicio && fin.getTime() <= citaHoraFin) ||
+          (inicio.getTime() <= citaHoraInicio && fin.getTime() >= citaHoraFin)
         );
       });
 
@@ -62,7 +76,8 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
       // Registrar la cita si no hay conflictos
       const nuevaCita = {
         idCliente: selectedCliente.value,
-        fecha: Timestamp.fromDate(nuevaFecha),
+        fecha: Timestamp.fromDate(inicio),
+        duracionMilisegundos,
         servicio,
         precio: parseFloat(precio),
         estado,
@@ -75,7 +90,8 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
 
       // Limpiar el formulario
       setSelectedCliente(null);
-      setFecha("");
+      setFechaInicio("");
+      setFechaFin(""); // Limpiar fecha fin
       setServicio("");
       setPrecio("");
       setEstado("Pendiente");
@@ -101,15 +117,29 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
       </div>
 
       <div className="mb-3">
-        <label htmlFor="fecha" className="form-label">
-          Fecha y Hora
+        <label htmlFor="fechaInicio" className="form-label">
+          Fecha y Hora de Inicio
         </label>
         <input
           type="datetime-local"
           className="form-control"
-          id="fecha"
-          value={fecha}
-          onChange={(e) => setFecha(e.target.value)}
+          id="fechaInicio"
+          value={fechaInicio}
+          onChange={(e) => setFechaInicio(e.target.value)}
+          required
+        />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="fechaFin" className="form-label">
+          Fecha y Hora de Fin
+        </label>
+        <input
+          type="datetime-local"
+          className="form-control"
+          id="fechaFin"
+          value={fechaFin}
+          onChange={(e) => setFechaFin(e.target.value)}
           required
         />
       </div>
