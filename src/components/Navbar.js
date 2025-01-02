@@ -5,7 +5,7 @@ export default function Navbar({ cambiarFondo }) {
     <nav className="navbar navbar-expand-lg navbar-custom">
       <div className="container">
         <a className="navbar-brand" href="/">
-          NailsApp
+          PrettyNails
         </a>
         <button
           className="navbar-toggler"

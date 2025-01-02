@@ -317,10 +317,18 @@
     min-height: 100vh; /* Asegura que el fondo cubra al menos la altura del viewport */
     display: flex;
     flex-direction: column; /* Asegura que los hijos estén en columna */
-    justify-content: space-between; /* Distribuye contenido con espacio */
+    
     align-items: center; /* Centra horizontalmente */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
   }
+  .custom-toast-success {
+    background-color: #28a745; /* Verde */
+    color: white;
+  }
   
+  .custom-toast-danger {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+  }
