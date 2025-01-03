@@ -6,6 +6,7 @@ import { register } from "@/auth"; // Asegúrate de que la ruta sea correcta
 import { Form, Button, Alert, Container, Row, Col } from "react-bootstrap";
 import { useToast } from "@/components/ToastProvider";
 const RegisterPage = () => {
+  const { addToast } = useToast(); // Usa el contexto de toasts
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -17,7 +18,7 @@ const RegisterPage = () => {
     e.preventDefault();
     setError(null); // Limpiar errores previos
     setSuccess(null); // Limpiar mensajes de éxito
-    const { addToast } = useToast(); // Usa el contexto de toasts
+    
     if (password !== confirmPassword) {
       setError("Las contraseñas no coinciden.");
       return;
