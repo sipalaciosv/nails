@@ -13,7 +13,9 @@ export default function ListarClientes({ clientes, onEdit }) {
     const search = searchTerm.toLowerCase();
     return (
       cliente.nombre.toLowerCase().includes(search) ||
-      cliente.whatsapp.toLowerCase().includes(search)
+      (cliente.whatsapp && cliente.whatsapp.toLowerCase().includes(search)) ||
+      (cliente.instagram && cliente.instagram.toLowerCase().includes(search)) ||
+      (cliente.facebook && cliente.facebook.toLowerCase().includes(search))
     );
   });
 
@@ -49,7 +51,7 @@ export default function ListarClientes({ clientes, onEdit }) {
         <input
           type="text"
           className="form-control"
-          placeholder="Buscar por nombre o WhatsApp"
+          placeholder="Buscar por nombre, WhatsApp, Instagram o Facebook"
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
@@ -66,9 +68,45 @@ export default function ListarClientes({ clientes, onEdit }) {
               <div className="card shadow-sm border-0 rounded-lg">
                 <div className="card-body">
                   <h5 className="card-title text-truncate">{cliente.nombre}</h5>
-                  <p className="card-text">
-                    <strong>WhatsApp:</strong> {cliente.whatsapp}
-                  </p>
+                  {cliente.whatsapp && (
+                    <p className="card-text">
+                      <strong>WhatsApp:</strong>{" "}
+                      <a
+                        href={`https://wa.me/${cliente.whatsapp}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-success"
+                      >
+                        {cliente.whatsapp}
+                      </a>
+                    </p>
+                  )}
+                  {cliente.instagram && (
+                    <p className="card-text">
+                      <strong>Instagram:</strong>{" "}
+                      <a
+                        href={cliente.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-secondary"
+                      >
+                        Ver perfil
+                      </a>
+                    </p>
+                  )}
+                  {cliente.facebook && (
+                    <p className="card-text">
+                      <strong>Facebook:</strong>{" "}
+                      <a
+                        href={cliente.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary"
+                      >
+                        Ver perfil
+                      </a>
+                    </p>
+                  )}
                   <p
                     className={`card-text text-muted ${
                       expandedNotes[cliente.id] ? "expanded" : "text-ellipsis"

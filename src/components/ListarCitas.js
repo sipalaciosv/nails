@@ -43,7 +43,7 @@ export default function ListarCitas({ citas, clientes, onCitaActualizada }) {
       setCurrentPage(currentPage - 1);
     }
   };
-  
+
   const handleEditar = (cita) => {
     setCitaEditando(cita);
     setShowModal(true);
@@ -62,21 +62,20 @@ export default function ListarCitas({ citas, clientes, onCitaActualizada }) {
     );
     setMensaje("Cita eliminada correctamente.");
   };
+
   const handleEnviarWhatsApp = (telefono, cliente, fecha, hora) => {
     if (!telefono) {
       alert("El cliente no tiene un número de WhatsApp asociado.");
       return;
     }
-  
+
     const baseUrl = "https://wa.me/";
     const mensaje = `Hola ${cliente}, queremos confirmar su cita programada para el ${fecha} a las ${hora}. ¿Podría confirmarnos?`;
-  
-    // Generar el enlace de WhatsApp
+
     const url = `${baseUrl}${telefono}?text=${encodeURIComponent(mensaje)}`;
-  
-    // Abrir en una nueva pestaña
     window.open(url, "_blank");
   };
+
   return (
     <div>
       {mensaje && (
@@ -115,56 +114,61 @@ export default function ListarCitas({ citas, clientes, onCitaActualizada }) {
                 <th>Hora Fin</th>
                 <th>Servicio</th>
                 <th>Precio</th>
+                <th>Abono</th>
                 <th>Estado</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {citasPaginadas.map((cita) => (
-                <tr key={cita.id}>
-                  <td>{getClienteNombre(cita.idCliente)}</td>
-                  <td style={{ whiteSpace: "nowrap" }}>
-  {format(cita.fecha.toDate(), "dd-MM-yyyy", { locale: es })}
-</td>
-                  <td>{format(cita.fecha.toDate(), "hh:mm a", { locale: es })}</td>
-                  <td>
-                    {format(
-                      new Date(cita.fecha.toDate().getTime() + cita.duracionMilisegundos),
-                      "hh:mm a",
-                      { locale: es }
-                    )}
-                  </td>
-                  <td>{cita.servicio}</td>
-                  <td>${cita.precio}</td>
-                  <td>{cita.estado}</td>
-                  <td>
-                    <div className="d-flex gap-2">
-                    <button
-  className="btn btn-whatsapp btn-sm"
-  onClick={() =>
-    handleEnviarWhatsApp(
-      clientes.find((c) => c.id === cita.idCliente)?.whatsapp.replace("+", ""),
-      getClienteNombre(cita.idCliente),
-      format(cita.fecha.toDate(), "dd-MM-yyyy"),
-      format(cita.fecha.toDate(), "hh:mm a")
-    )
-  }
->
-  <i className="bi bi-whatsapp"></i>
-</button>
-                      <button
-                        className="btn btn-edit btn-sm"
-                        onClick={() => handleEditar(cita)}
-                      >
-                        Editar
-                      </button>
-                      
-                      <EliminarCita idCita={cita.id} onEliminar={handleEliminar} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+  {citasPaginadas.map((cita) => (
+    <tr key={cita.id}>
+      <td>{getClienteNombre(cita.idCliente)}</td>
+      <td>
+        {format(cita.fecha.toDate(), "dd-MM-yyyy", { locale: es })}
+      </td>
+      <td>{format(cita.fecha.toDate(), "hh:mm a", { locale: es })}</td>
+      <td>
+        {format(
+          new Date(
+            cita.fecha.toDate().getTime() + cita.duracionMilisegundos
+          ),
+          "hh:mm a",
+          { locale: es }
+        )}
+      </td>
+      <td>{cita.servicio}</td>
+      <td>${cita.precio}</td>
+<td>${cita.abono || 0}</td>
+      <td>{cita.estado}</td>
+      <td>
+        <div className="d-flex gap-2">
+          <button
+            className="btn btn-whatsapp btn-sm"
+            onClick={() =>
+              handleEnviarWhatsApp(
+                clientes
+                  .find((c) => c.id === cita.idCliente)
+                  ?.whatsapp.replace("+", ""),
+                getClienteNombre(cita.idCliente),
+                format(cita.fecha.toDate(), "dd-MM-yyyy"),
+                format(cita.fecha.toDate(), "hh:mm a")
+              )
+            }
+          >
+            <i className="bi bi-whatsapp"></i>
+          </button>
+          <button
+            className="btn btn-edit btn-sm"
+            onClick={() => handleEditar(cita)}
+          >
+            Editar
+          </button>
+          <EliminarCita idCita={cita.id} onEliminar={handleEliminar} />
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
           </table>
         </div>
       )}

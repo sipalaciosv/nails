@@ -9,31 +9,34 @@ export default function RegistrarCliente({ onClienteAgregado }) {
   const [nombre, setNombre] = useState("");
   const [whatsapp, setWhatsapp] = useState("+569");
   const [notas, setNotas] = useState("");
-  const [toastVisible, setToastVisible] = useState(false); // Controlar la visibilidad del toast
+  const [instagram, setInstagram] = useState("https://www.instagram.com/");
+  const [facebook, setFacebook] = useState("https://www.facebook.com/");
+  const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("success"); // "success" o "danger"
+  const [toastVariant, setToastVariant] = useState("success");
 
   const handleAddCliente = async (e) => {
     e.preventDefault();
-    // Validar que el número de WhatsApp tenga exactamente 12 caracteres (+569 + 8 dígitos)
-    if (whatsapp.length !== 12) {
-      setToastMessage("El número de WhatsApp debe tener 8 dígitos después de +569.");
-      setToastVariant("danger");
-      setToastVisible(true);
-      return;
-    }
-    if (!nombre || !whatsapp) {
-      setToastMessage("Por favor, llena los campos de Nombre y WhatsApp.");
-      setToastVariant("danger");
-      setToastVisible(true);
-      return;
-    }
+
+    // Validar si los campos de Instagram o Facebook no tienen un usuario
+    const instagramFinal =
+      instagram === "https://www.instagram.com/" ? "" : instagram;
+    const facebookFinal =
+      facebook === "https://www.facebook.com/" ? "" : facebook;
+
+    // Validar si el número de WhatsApp tiene un formato válido
+    const whatsappFinal =
+      whatsapp.length === 12 && whatsapp.startsWith("+569")
+        ? whatsapp
+        : ""; // Guardar vacío si no es válido
 
     try {
       const docRef = await addDoc(collection(db, "clientes"), {
         nombre,
-        whatsapp,
+        whatsapp: whatsappFinal,
         notas,
+        instagram: instagramFinal,
+        facebook: facebookFinal,
       });
 
       setToastMessage("Cliente agregado exitosamente!");
@@ -43,26 +46,23 @@ export default function RegistrarCliente({ onClienteAgregado }) {
       onClienteAgregado({
         id: docRef.id,
         nombre,
-        whatsapp,
+        whatsapp: whatsappFinal,
         notas,
+        instagram: instagramFinal,
+        facebook: facebookFinal,
       });
 
+      // Limpiar campos después de guardar
       setNombre("");
       setWhatsapp("+569");
       setNotas("");
+      setInstagram("https://www.instagram.com/");
+      setFacebook("https://www.facebook.com/");
     } catch (error) {
       console.error("Error agregando cliente: ", error);
       setToastMessage("Hubo un error al agregar el cliente.");
       setToastVariant("danger");
       setToastVisible(true);
-    }
-  };
-
-  const handleWhatsappChange = (e) => {
-    const input = e.target.value;
-    // Permitir solo números después de "+569"
-    if (/^\+569\d*$/.test(input) || input === "+569") {
-      setWhatsapp(input);
     }
   };
 
@@ -86,9 +86,28 @@ export default function RegistrarCliente({ onClienteAgregado }) {
             type="text"
             placeholder="+56912345678"
             value={whatsapp}
-            onChange={handleWhatsappChange}
+            onChange={(e) => setWhatsapp(e.target.value)}
             className="form-control"
-            required
+          />
+        </div>
+        <div className="mb-3">
+          <label>Instagram</label>
+          <input
+            type="text"
+            placeholder="https://www.instagram.com/usuario/"
+            value={instagram}
+            onChange={(e) => setInstagram(e.target.value)}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-3">
+          <label>Facebook</label>
+          <input
+            type="text"
+            placeholder="https://www.facebook.com/usuario/"
+            value={facebook}
+            onChange={(e) => setFacebook(e.target.value)}
+            className="form-control"
           />
         </div>
         <div className="mb-3">
@@ -107,10 +126,13 @@ export default function RegistrarCliente({ onClienteAgregado }) {
         </div>
       </form>
 
-      {/* Toast para notificaciones */}
       <ToastContainer position="top-end" className="p-3">
         <Toast
-         className={toastVariant === "success" ? "custom-toast-success" : "custom-toast-danger"}
+          className={
+            toastVariant === "success"
+              ? "custom-toast-success"
+              : "custom-toast-danger"
+          }
           show={toastVisible}
           onClose={() => setToastVisible(false)}
           delay={3000}
@@ -120,7 +142,7 @@ export default function RegistrarCliente({ onClienteAgregado }) {
             <strong className="me-auto">Notificación</strong>
             <small>Justo ahora</small>
           </Toast.Header>
-          <Toast.Body >{toastMessage}</Toast.Body>
+          <Toast.Body>{toastMessage}</Toast.Body>
         </Toast>
       </ToastContainer>
     </>

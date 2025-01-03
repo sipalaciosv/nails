@@ -18,6 +18,7 @@ export default function EditarCita({ cita, onActualizar, onCancelar }) {
   );
   const [servicio, setServicio] = useState(cita.servicio);
   const [precio, setPrecio] = useState(cita.precio);
+  const [abono, setAbono] = useState(cita.abono || ""); // Campo de abono
   const [estado, setEstado] = useState(cita.estado);
 
   const handleSave = async (e) => {
@@ -42,6 +43,7 @@ export default function EditarCita({ cita, onActualizar, onCancelar }) {
         duracionMilisegundos,
         servicio,
         precio: parseFloat(precio),
+        abono: abono ? parseFloat(abono) : 0, // Guardar abono como 0 si está vacío
         estado,
       });
 
@@ -51,6 +53,7 @@ export default function EditarCita({ cita, onActualizar, onCancelar }) {
         duracionMilisegundos,
         servicio,
         precio: parseFloat(precio),
+        abono: abono ? parseFloat(abono) : 0,
         estado,
       });
     } catch (error) {
@@ -128,6 +131,24 @@ export default function EditarCita({ cita, onActualizar, onCancelar }) {
           onChange={(e) => setPrecio(e.target.value)}
           required
         />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="abono" className="form-label">
+          Abono
+        </label>
+        <input
+          type="number"
+          className="form-control"
+          id="abono"
+          value={abono}
+          onChange={(e) => setAbono(e.target.value)}
+          min="0"
+          step="0.01"
+        />
+        <small className="text-muted">
+          Deja este campo vacío si no hubo abono.
+        </small>
       </div>
 
       <div className="mb-3">

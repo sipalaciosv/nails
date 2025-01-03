@@ -15,6 +15,7 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
   const [horaFin, setHoraFin] = useState(""); // Hora de fin
   const [servicio, setServicio] = useState("");
   const [precio, setPrecio] = useState("");
+  const [abono, setAbono] = useState(""); // Campo de abono directo
   const [estado, setEstado] = useState("Pendiente");
   const [notas, setNotas] = useState("");
 
@@ -76,6 +77,7 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
         duracionMilisegundos,
         servicio,
         precio: parseFloat(precio),
+        abono: abono ? parseFloat(abono) : 0, // Guardar abono como 0 si está vacío
         estado,
         notas,
       };
@@ -91,6 +93,7 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
       setHoraFin("");
       setServicio("");
       setPrecio("");
+      setAbono(""); // Limpiar el campo de abono
       setEstado("Pendiente");
       setNotas("");
     } catch (error) {
@@ -181,6 +184,24 @@ export default function RegistrarCita({ clientes, onCitaAgregada }) {
           onChange={(e) => setPrecio(e.target.value)}
           required
         />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="abono" className="form-label">
+          Abono
+        </label>
+        <input
+          type="number"
+          className="form-control"
+          id="abono"
+          value={abono}
+          onChange={(e) => setAbono(e.target.value)}
+          min="0"
+          step="0.01"
+        />
+        <small className="text-muted">
+          Deja este campo vacío si no hubo abono.
+        </small>
       </div>
 
       <div className="mb-3">

@@ -30,41 +30,81 @@ export default function Calendario() {
     try {
       const citasSnapshot = await getDocs(collection(db, "citas"));
       const clientesSnapshot = await getDocs(collection(db, "clientes"));
-
-      // Crear un mapa de clientes para buscar rápidamente por ID
+  
       const clientesMap = {};
       clientesSnapshot.docs.forEach((doc) => {
         const data = doc.data();
         clientesMap[doc.id] = {
           nombre: data.nombre,
-          telefono: data.whatsapp.replace("+", ""), // Elimina el "+" para el enlace
+          telefono: data.whatsapp?.replace("+", "") || null,
+          instagram: data.instagram || null,
+          facebook: data.facebook || null,
         };
       });
-
+  
       const citasData = citasSnapshot.docs.map((doc) => {
         const data = doc.data();
-        const cliente = clientesMap[data.idCliente] || { nombre: "Desconocido", telefono: "" };
+        const cliente = clientesMap[data.idCliente] || { nombre: "Desconocido", telefono: null };
         return {
           id: doc.id,
           title: `${cliente.nombre} - ${data.servicio}`,
           start: data.fecha.toDate(),
           end: new Date(data.fecha.toDate().getTime() + data.duracionMilisegundos),
-          fecha: data.fecha, // Para EditarCita
-          duracionMilisegundos: data.duracionMilisegundos, // Para EditarCita
           cliente: cliente.nombre,
           telefono: cliente.telefono,
+          instagram: cliente.instagram,
+          facebook: cliente.facebook, // Incluye correctamente el campo Facebook
           estado: data.estado,
           notas: data.notas,
           precio: data.precio,
-          servicio: data.servicio, // Agrega el servicio
+          abono: data.abono || 0,
         };
       });
+  
       setCitas(citasData);
     } catch (error) {
       console.error("Error al cargar citas:", error);
     }
   };
-
+  
+  
+  const fetchClienteDetails = async (idCliente) => {
+    try {
+      const clienteSnapshot = await getDocs(collection(db, "clientes"));
+      const clienteDoc = clienteSnapshot.docs.find((doc) => doc.id === idCliente);
+      if (clienteDoc) {
+        const clienteData = clienteDoc.data();
+        return {
+          telefono: clienteData.whatsapp?.replace("+", "") || null,
+          instagram: clienteData.instagram || null,
+          facebook: clienteData.facebook || null,
+        };
+      }
+      return { telefono: null, instagram: null, facebook: null };
+    } catch (error) {
+      console.error("Error al obtener los detalles del cliente:", error);
+      return { telefono: null, instagram: null, facebook: null };
+    }
+  };
+  
+  const handleCopiarRecordatorio = () => {
+    if (!modalData) {
+      alert("No hay datos de la cita para copiar el mensaje.");
+      return;
+    }
+  
+    const mensaje = `Hola ${modalData.cliente}, queremos confirmar su cita programada para el ${modalData.start.toLocaleDateString()} a las ${modalData.start.toLocaleTimeString()}. ¿Podría confirmarnos?`;
+  
+    navigator.clipboard
+      .writeText(mensaje)
+      .then(() => {
+        alert("Mensaje copiado al portapapeles.");
+      })
+      .catch((err) => {
+        console.error("Error al copiar al portapapeles:", err);
+        alert("Hubo un problema al copiar el mensaje.");
+      });
+  };
   const handleEnviarWhatsApp = () => {
     if (!modalData || !modalData.telefono) {
       alert("El cliente no tiene un número de WhatsApp asociado.");
@@ -86,9 +126,18 @@ export default function Calendario() {
   }, []);
 
   const handleSelectEvent = (event) => {
-    setModalData(event); // Establece la cita seleccionada
-    setIsEditing(false); // Asegúrate de que no esté en modo edición al abrir
+    const cliente = citas.find((cita) => cita.id === event.id);
+    if (cliente) {
+      setModalData({
+        ...event,
+        telefono: cliente.telefono,
+        instagram: cliente.instagram,
+        facebook: cliente.facebook, // Asegúrate de incluirlo
+      });
+    }
+    setIsEditing(false);
   };
+  
 
   const closeModal = () => {
     setModalData(null); // Cierra el modal
@@ -176,44 +225,85 @@ export default function Calendario() {
         </Modal.Header>
         {modalData && (
           <Modal.Body>
-            {isEditing ? (
-              <EditarCita
-                cita={{
-                  ...modalData,
-                  fecha: Timestamp.fromDate(modalData.start),
-                  duracionMilisegundos:
-                    modalData.end.getTime() - modalData.start.getTime(),
-                }}
-                onActualizar={handleActualizar}
-                onCancelar={() => setIsEditing(false)} // Salir del modo edición
-              />
-            ) : (
-              <>
+          {isEditing ? (
+            <EditarCita
+              cita={{
+                ...modalData,
+                fecha: Timestamp.fromDate(modalData.start),
+                duracionMilisegundos:
+                  modalData.end.getTime() - modalData.start.getTime(),
+              }}
+              onActualizar={handleActualizar}
+              onCancelar={() => setIsEditing(false)}
+            />
+          ) : (
+            <>
+              <p>
+                <strong>Cliente:</strong> {modalData.cliente}
+              </p>
+              <p>
+                <strong>Servicio:</strong> {modalData.servicio}
+              </p>
+              <p>
+                <strong>Fecha:</strong> {modalData.start.toLocaleString()}
+              </p>
+              <p>
+                <strong>Estado:</strong> {modalData.estado}
+              </p>
+              <p>
+                <strong>Precio:</strong> ${modalData.precio}
+              </p>
+              <p>
+                <strong>Abono:</strong> ${modalData.abono || 0}
+              </p>
+              {modalData.telefono && (
                 <p>
-                  <strong>Cliente:</strong> {modalData.cliente}
+                  <strong>WhatsApp:</strong>{" "}
+                  <a
+                    href={`https://wa.me/${modalData.telefono}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-sm btn-whatsapp"
+                  >
+                    <i className="bi bi-whatsapp"></i> Enviar WhatsApp
+                  </a>
                 </p>
-                <p>
-                  <strong>Servicio:</strong> {modalData.servicio}
-                </p>
-                <p>
-                  <strong>Fecha:</strong> {modalData.start.toLocaleString()}
-                </p>
-                <p>
-                  <strong>Estado:</strong> {modalData.estado}
-                </p>
-                <p>
-                  <strong>Precio:</strong> ${modalData.precio}
-                </p>
-                <p>
-                  <strong>Notas:</strong> {modalData.notas || "Sin notas"}
-                </p>
-              </>
-            )}
-          </Modal.Body>
+              )}
+              {modalData.facebook && (
+  <p>
+    <strong>Facebook:</strong>{" "}
+    <a
+      href={modalData.facebook}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Ver perfil
+    </a>
+  </p>
+)}
+{modalData.instagram && (
+  <p>
+    <strong>Instagram:</strong>{" "}
+    <a
+      href={modalData.instagram}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Ver perfil
+    </a>
+  </p>
+)}
+              <p>
+                <strong>Notas:</strong> {modalData.notas || "Sin notas"}
+              </p>
+            </>
+          )}
+        </Modal.Body>
+        
         )}
         <Modal.Footer>
   {!isEditing ? (
-    <Button className="btn-edit"  onClick={() => setIsEditing(true)}>
+    <Button className="btn-edit" onClick={() => setIsEditing(true)}>
       Editar
     </Button>
   ) : null}
@@ -223,7 +313,34 @@ export default function Calendario() {
   <Button className="btn-whatsapp" onClick={handleEnviarWhatsApp}>
     <i className="bi bi-whatsapp"></i> Enviar WhatsApp
   </Button>
+  
+  {modalData && (
+    <div style={{ width: "100%", marginTop: "10px" }}>
+      <label htmlFor="recordatorioTextarea">
+        <strong>Texto del Recordatorio:</strong>
+      </label>
+      <textarea
+        id="recordatorioTextarea"
+        readOnly
+        style={{ width: "100%", height: "100px", marginTop: "5px" }}
+        value={`Hola ${modalData.cliente}, queremos confirmar su cita programada para el ${modalData.start.toLocaleDateString()} a las ${modalData.start.toLocaleTimeString()}. ¿Podría confirmarnos?`}
+      />
+      <Button
+        variant="primary"
+        onClick={() => {
+          const textarea = document.getElementById("recordatorioTextarea");
+          textarea.select();
+          textarea.setSelectionRange(0, 99999); // Para dispositivos móviles
+          
+        }}
+        style={{ marginTop: "10px" }}
+      >
+        Seleccionar Texto
+      </Button>
+    </div>
+  )}
 </Modal.Footer>
+
       </Modal>
     </div>
   );
