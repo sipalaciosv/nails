@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import "react-big-calendar/lib/css/react-big-calendar.css";
+
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { es } from "date-fns/locale";
 import { collection, getDocs, Timestamp } from "firebase/firestore";
@@ -10,7 +10,7 @@ import { db } from "@/firebase";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import EditarCita from "@/components/EditarCita";
-
+import "react-big-calendar/lib/css/react-big-calendar.css";
 const locales = { es };
 const localizer = dateFnsLocalizer({
   format: (date, formatStr, options) => format(date, formatStr, { ...options, locale: es }),
