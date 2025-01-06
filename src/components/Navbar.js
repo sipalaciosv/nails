@@ -50,6 +50,11 @@ export default function Navbar({ cambiarFondo }) {
               </a>
             </li>
             <li className="nav-item">
+              <a className="nav-link" href="/disponibilidad">
+                Disponibilidad
+              </a>
+            </li>
+            <li className="nav-item">
               <a className="nav-link" href="/calendario">
                 Calendario
               </a>
