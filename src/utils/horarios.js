@@ -1,55 +1,18 @@
-// utils/horarios.js
-
 /**
- * Calcula los rangos de tiempo disponibles excluyendo las citas ocupadas y el bloque de almuerzo.
- * @param {Date} horarioInicio - Inicio del horario de trabajo.
- * @param {Date} horarioFin - Fin del horario de trabajo.
+ * Calcula las horas específicas disponibles basadas en rangos fijos y citas ocupadas.
  * @param {Array<Object>} citas - Lista de citas [{ horaInicio, horaFin }].
- * @param {Object} bloqueAlmuerzo - Bloque de almuerzo { start, end }.
- * @returns {Array<Object>} - Rangos de tiempo disponibles [{ start, end }].
+ * @param {Array<Object>} horasFijas - Lista de horas fijas [{ hora, rangoInicio, rangoFin }].
+ * @returns {Array<string>} - Lista de horas disponibles ["11:00", "16:00", "19:00"].
  */
-export const calcularRangosDisponibles = (horarioInicio, horarioFin, citas, bloqueAlmuerzo) => {
-    let rangosDisponibles = [{ start: horarioInicio, end: horarioFin }];
-  
-    // Eliminar rangos ocupados por citas
-    citas.forEach((cita) => {
-      rangosDisponibles = rangosDisponibles.flatMap((rango) => {
-        if (cita.horaInicio >= rango.end || cita.horaFin <= rango.start) {
-          return [rango]; // No hay solapamiento
-        }
-  
-        const nuevosRangos = [];
-        if (cita.horaInicio > rango.start) {
-          nuevosRangos.push({ start: rango.start, end: cita.horaInicio });
-        }
-        if (cita.horaFin < rango.end) {
-          nuevosRangos.push({ start: cita.horaFin, end: rango.end });
-        }
-        return nuevosRangos;
-      });
-      
-    });
-  
-    // Eliminar bloque de almuerzo
-    rangosDisponibles = rangosDisponibles.flatMap((rango) => {
-      if (bloqueAlmuerzo.start >= rango.end || bloqueAlmuerzo.end <= rango.start) {
-        return [rango]; // No hay solapamiento con almuerzo
-      }
-  
-      const nuevosRangos = [];
-      if (bloqueAlmuerzo.start > rango.start) {
-        nuevosRangos.push({ start: rango.start, end: bloqueAlmuerzo.start });
-      }
-      if (bloqueAlmuerzo.end < rango.end) {
-        nuevosRangos.push({ start: bloqueAlmuerzo.end, end: rango.end });
-      }
-      return nuevosRangos;
-    });
-  // Filtrar rangos menores a una hora
-  return rangosDisponibles.filter(
-    (rango) =>
-      (rango.end.getTime() - rango.start.getTime()) / (1000 * 60) >= 60 // Duración en minutos
-  );
-    return rangosDisponibles;
-  };
-  
+export const calcularHorasDisponibles = (citas, horasFijas) => {
+  return horasFijas
+    .filter(({ rangoInicio, rangoFin }) => {
+      // Verificar si alguna cita ocupa el rango asociado a la hora fija
+      const estaOcupado = citas.some(
+        (cita) =>
+          cita.horaInicio < rangoFin && cita.horaFin > rangoInicio // Solapamiento
+      );
+      return !estaOcupado; // Incluir solo las horas no ocupadas
+    })
+    .map(({ hora }) => hora); // Devolver solo las horas disponibles
+};
