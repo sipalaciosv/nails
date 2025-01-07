@@ -27,6 +27,7 @@ export const calcularRangosDisponibles = (horarioInicio, horarioFin, citas, bloq
         }
         return nuevosRangos;
       });
+      
     });
   
     // Eliminar bloque de almuerzo
@@ -44,7 +45,11 @@ export const calcularRangosDisponibles = (horarioInicio, horarioFin, citas, bloq
       }
       return nuevosRangos;
     });
-  
+  // Filtrar rangos menores a una hora
+  return rangosDisponibles.filter(
+    (rango) =>
+      (rango.end.getTime() - rango.start.getTime()) / (1000 * 60) >= 60 // Duración en minutos
+  );
     return rangosDisponibles;
   };
   
