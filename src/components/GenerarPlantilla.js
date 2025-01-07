@@ -31,15 +31,21 @@ export default function GenerarPlantilla({ disponibilidadSemanal, mes }) {
 
           // Ajustes para cada fila
           const xDia = 40;
-          const xFecha = 130;
-          const xHorarios = 210;
+          const xFecha = 150;
+          const xHorarios = 300;
           let yPos = 250;
 
-          ctx.font = "16px 'Montserrat'"; // Usar Montserrat para días y horarios
+          ctx.font = "20px 'Montserrat'"; // Usar Montserrat para días y horarios
           disponibilidadSemanal.forEach((dia) => {
             ctx.textAlign = "left";
             ctx.fillText(dia.dia, xDia, yPos); // Día
             ctx.fillText(dia.fecha.toString().padStart(2, "0"), xFecha, yPos); // Fecha
+            // Verificar si hay horarios disponibles
+            if (dia.horarios.length > 0) {
+              ctx.fillText(dia.horarios.join(" | "), xHorarios, yPos); // Horarios
+            } else {
+              ctx.fillText("           Horas agotadas para este día", xHorarios, yPos); // Texto alternativo
+            }
             ctx.fillText(dia.horarios.join(" | "), xHorarios, yPos); // Horarios
             yPos += 60; // Incrementar la posición vertical
           });

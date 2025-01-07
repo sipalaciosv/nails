@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import GenerarPlantilla from "@/components/GenerarPlantilla";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase";
-import { calcularRangosDisponibles } from "@/utils/horarios";
+import { calcularHorasDisponibles } from "@/utils/horarios";
 import { useBackground } from "@/context/BackgroundContext";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
@@ -64,36 +64,33 @@ export default function DisponibilidadSemanal() {
         return { horaInicio, horaFin };
       });
 
-      const disponibilidad = await Promise.all(
-        diasSemana.map(async (dia) => {
-          const horarioInicio = new Date(dia.setHours(11, 0, 0, 0));
-          const horarioFin = new Date(dia.setHours(19, 0, 0, 0));
-          const bloqueAlmuerzo = {
-            start: new Date(dia.setHours(13, 30, 0, 0)),
-            end: new Date(dia.setHours(16, 0, 0, 0)),
-          };
+      const disponibilidad = diasSemana.map((dia) => {
+        const horasFijas = [
+          {
+            hora: "11:00",
+            rangoInicio: new Date(dia.setHours(11, 0, 0, 0)),
+            rangoFin: new Date(dia.setHours(13, 0, 0, 0)),
+          },
+          {
+            hora: "16:00",
+            rangoInicio: new Date(dia.setHours(16, 0, 0, 0)),
+            rangoFin: new Date(dia.setHours(19, 0, 0, 0)),
+          },
+          {
+            hora: "19:00",
+            rangoInicio: new Date(dia.setHours(19, 0, 0, 0)),
+            rangoFin: new Date(dia.setHours(23, 0, 0, 0)),
+          },
+        ];
 
-          const citasDelDia = citas.filter(
-            (cita) => cita.horaInicio.toDateString() === dia.toDateString()
-          );
+        const horasDisponibles = calcularHorasDisponibles(citas, horasFijas);
 
-          const rangosDisponibles = calcularRangosDisponibles(
-            horarioInicio,
-            horarioFin,
-            citasDelDia,
-            bloqueAlmuerzo
-          );
-
-          return {
-            dia: dia.toLocaleDateString("es-ES", { weekday: "long" }),
-            fecha: dia.getDate(),
-            horarios: rangosDisponibles.map(
-              (rango) =>
-                `${rango.start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} - ${rango.end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
-            ),
-          };
-        })
-      );
+        return {
+          dia: dia.toLocaleDateString("es-ES", { weekday: "long" }),
+          fecha: dia.getDate(),
+          horarios: horasDisponibles.length > 0 ? horasDisponibles : ["Horas agotadas"],
+        };
+      });
 
       setDisponibilidadSemanal(disponibilidad);
     } catch (error) {
@@ -128,7 +125,7 @@ export default function DisponibilidadSemanal() {
         <h1 className="h1-titulo text-center mb-4">Disponibilidad Semanal</h1>
 
         <div className="card card-pastel p-4">
-          {/* Fila para selector de fecha y botón */}
+          {/* Fila para selector de fecha */}
           <div className="row align-items-center mb-4">
             <div className="col-md-8">
               <label htmlFor="fechaSeleccionada" className="form-label">
@@ -143,7 +140,6 @@ export default function DisponibilidadSemanal() {
                 required
               />
             </div>
-            
           </div>
 
           {/* Mostrar disponibilidad */}
